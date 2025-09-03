@@ -1,29 +1,51 @@
-<script setup lang="ts">
-</script>
-
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <router-view />
+	<div>
+		<header><button @click="toggleTheme">oi</button></header>
+		<main class="flex-center" style="text-align: left;">
+			<router-view />
+		</main>
+	</div>
 </template>
 
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { CURRENT_LANG, STR, type ValidLangs } from './scripts/lang';
+
+export default defineComponent({
+	methods: {
+		getLang(): ValidLangs {
+			return CURRENT_LANG.value;
+		},
+		setLang(lang: ValidLangs): void {
+			CURRENT_LANG.value = lang
+		},
+		str(key: string): string {
+			return STR(key);
+		},
+		toggleTheme(): void {
+			document.documentElement.classList.contains('dark') ? document.documentElement.classList.remove('dark') : document.documentElement.classList.add('dark')
+		}
+	},
+	mounted() {
+		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			document.documentElement.classList.add('dark')
+		}
+	}
+})
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+html, body, p, a, div, span, button {
+	font-size: 24px;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+:root {
+  font-size: 18px;
 }
 </style>
