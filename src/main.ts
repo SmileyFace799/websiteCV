@@ -11,6 +11,7 @@ import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
 import Panel from 'primevue/panel';
 import Tree from 'primevue/tree';
+import Divider from 'primevue/divider';
 
 createApp(App)
 .use(router)
@@ -30,4 +31,5 @@ createApp(App)
 .component('AccordionContent', AccordionContent)
 .component('Panel', Panel)
 .component('Tree', Tree)
+.component('Divider', Divider)
 .mount('#app')

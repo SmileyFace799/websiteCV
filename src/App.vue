@@ -9,14 +9,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { CURRENT_LANG, STR, type ValidLangs } from './scripts/lang';
+import { CURRENT_LANG, STR, type ValidLang } from './scripts/lang';
 
 export default defineComponent({
 	methods: {
-		getLang(): ValidLangs {
+		getLang(): ValidLang {
 			return CURRENT_LANG.value;
 		},
-		setLang(lang: ValidLangs): void {
+		setLang(lang: ValidLang): void {
 			CURRENT_LANG.value = lang
 		},
 		str(key: string): string {
