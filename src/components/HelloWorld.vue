@@ -1,21 +1,23 @@
 <template>
 	<div class="grid">
-		<panel v-for="panelInfo, i in panels" :header="fillKeys(panelInfo.header)" class="box" :style="`grid-row: ${i+1}; grid-column: 1 / ${i < 2 ? 4 : 6};`">
-			<tree :key="i" :value="panelInfo.tree" :expanded-keys="Object.fromEntries(panelInfo.expanded.map(k => [k, true]))">
+		<p-panel v-for="panelInfo, i in panels" :header="fillKeys(panelInfo.header)" class="box" :style="`grid-row: ${i+1}; grid-column: 1 / ${i < 2 ? 4 : 6};`">
+			<p-tree :key="i" :value="panelInfo.tree" :expanded-keys="Object.fromEntries(panelInfo.expanded.map(k => [k, true]))">
 				<template #default="{ node }">
 					<template v-if="node.url"><b v-if="node.preBold">{{ fillKeys(node.preBold) }}: </b>{{ fillKeys(node.preUrl) }}<a target="_blank" :href="fillKeys(node.url)">{{ fillKeys(node.label) }}</a>{{ fillKeys(node.postUrl) }}</template>
 					<template v-else><b v-if="node.preBold">{{ fillKeys(node.preBold) }}: </b>{{ fillKeys(node.preUrl) }}{{ fillKeys(node.label) }}{{ fillKeys(node.postUrl) }}</template>
 				</template>
-			</tree>
+			</p-tree>
 			<template v-if="i === 1">*Group project</template>
-		</panel>
-		<panel :header="str('strAboutMe')" class="box rightBox"><table><tbody>
+		</p-panel>
+		<p-panel :header="str('strAboutMe')" class="box rightBox"><table><tbody>
 			<tr><td><img src="../assets/smiley_pfp.png" style="width: 100%;"></img></td></tr>
 			<template v-for="entry of rightPanel">
-				<divider/>
-				<tr v-if="shouldBeShown(entry.confidential)"><td><b>{{ fillKeys(entry.key) }}: </b>{{ fillKeys(entry.value) }}</td></tr>
+				<template v-if="shouldBeShown(entry.confidential)">
+					<p-divider/>
+					<tr><td><b>{{ fillKeys(entry.key) }}: </b>{{ fillKeys(entry.value) }}</td></tr>
+				</template>
 			</template>
-		</tbody></table></panel>
+		</tbody></table></p-panel>
 	</div>
 </template>
 
@@ -352,9 +354,12 @@ export default defineComponent({
 			] as {header: string, tree: TreeNode[], expanded: string[]}[],
 			rightPanel: [
 				{key: "{strName}", value: "SmileyFace799"},
-				{key: "{strBorn}", value: "2003", confidential: true},
+				{key: "{strBorn}", value: "{personalBirthDate}/{personalBirthMonth}/{personalBirthYear}", confidential: true},
+				{key: "{strNationality}", value: "{personalNationality}"},
+				{key: "{strLanguages}", value: "{personalLanguages}"},
 				{key: "{strOccupation}", value: "Student"},
 				{key: "{strAddress}", value: "{personalAddress}", confidential: true},
+				{key: "Discord", value: "{personalDiscord}"},
 				{key: "{strPhone}", value: "{personalPhone}", confidential: true},
 				{key: "{strEmail}", value: "{personalEmail}", confidential: true}
 			]

@@ -1,7 +1,9 @@
 import { ref } from "vue";
 
 const lang = {
-	common: {} as {[key: string]: string},
+	common: {
+		personalDiscord: "@smileyface799"
+	} as {[key: string]: string},
 	en_us: {
 		// String literals
 		strRelSkills: "Related skills",
@@ -30,6 +32,8 @@ const lang = {
 		strAboutMe: "About me",
 		strName: "Name",
 		strBorn: "Born",
+		strNationality: "Nationality",
+		strLanguages: "Languages",
 		strOccupation: "Occupation",
 		strAddress: "Address",
 		strPhone: "Phone",
@@ -58,8 +62,8 @@ const lang = {
 		
 		// personal info
 		personalOccupation: "Student",
-		personalAddress: "Norway",
-		personalLanguage: "Norwegian & English",
+		personalNationality: "Norwegian",
+		personalLanguages: "Norwegian & English",
 		
 		// thesises
 		thesisBachelor: "Bachelor Theses",
@@ -127,6 +131,8 @@ const lang = {
 		strAboutMe: "Om meg",
 		strName: "Navn",
 		strBorn: "Født",
+		strNationality: "Nasjonalitet",
+		strLanguages: "Språk",
 		strOccupation: "Jobb",
 		strAddress: "Addresse",
 		strPhone: "Telefon",
@@ -155,7 +161,7 @@ const lang = {
 		
 		// personal info
 		personalOccupation: "Student",
-		personalAddress: "Norge",
+		personalNationality: "Norsk",
 		personalLanguage: "Norsk & Engelsk",
 		
 		// thesises
@@ -203,22 +209,24 @@ export type ValidLang = keyof typeof lang;
 export var CURRENT_LANG = ref("en_us" as ValidLang);
 export const CONFIDENTIAL_LOADED = ref(false);
 
-fetch('http://localhost:5000/confidential', {
-	headers: {
-		"X-API-key": "A>3qc>1FVJ<v/g/9WRyEYpiDUaVRVLtv<ASo#{+OqorWhz>d2e"
-	}
-})
-.then(r => r.ok ? r.json() : null)
-.then(json => {
-	if (json && json.result) {
-		for (const k in json.result) {
-			if (k in lang) {
-				confidential[k as ValidLang] = json.result[k]
+export function FETCH_CONFIDENTIAL_LANG(token: string) {
+	fetch('http://localhost:5000/confidential', {
+		headers: {
+			"X-API-key": token
+		}
+	})
+	.then(r => r.ok ? r.json() : null)
+	.then(json => {
+		if (json && json.result) {
+			for (const k in json.result) {
+				if (k in lang) {
+					confidential[k as ValidLang] = json.result[k]
+				}
 			}
 		}
-	}
-	CONFIDENTIAL_LOADED.value = true;
-});
+		CONFIDENTIAL_LOADED.value = true;
+	});
+}
 
 export function STR(key: string): string {
 	var keys = CONFIDENTIAL_LOADED.value ? confidential[CURRENT_LANG.value] : undefined; //lang[CURRENT_LANG.value] as {[key: string]: string} | undefined;

@@ -1,20 +1,20 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
-import router from './router'
-import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
+import PrimeVue from 'primevue/config'
+import router from './router'
+import ToastService from 'primevue/toastservice';
 
-import Accordion from 'primevue/accordion'
-import AccordionPanel from 'primevue/accordionpanel';
-import AccordionHeader from 'primevue/accordionheader';
-import AccordionContent from 'primevue/accordioncontent';
-import Panel from 'primevue/panel';
-import Tree from 'primevue/tree';
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
 import Divider from 'primevue/divider';
+import InputText from 'primevue/inputtext';
+import Panel from 'primevue/panel';
+import Toast from 'primevue/toast';
+import Tree from 'primevue/tree';
 
 createApp(App)
-.use(router)
 .use(PrimeVue, {
     theme: {
         preset: Aura,
@@ -25,11 +25,13 @@ createApp(App)
         }
     }
 })
-.component('Accordion', Accordion)
-.component('AccordionPanel', AccordionPanel)
-.component('AccordionHeader', AccordionHeader)
-.component('AccordionContent', AccordionContent)
-.component('Panel', Panel)
-.component('Tree', Tree)
-.component('Divider', Divider)
+.use(router)
+.use(ToastService)
+.component('p-button', Button)
+.component('p-dialog', Dialog)
+.component('p-divider', Divider)
+.component('p-input-text', InputText)
+.component('p-panel', Panel)
+.component('p-toast', Toast)
+.component('p-tree', Tree)
 .mount('#app')
