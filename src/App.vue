@@ -10,7 +10,7 @@
 
 			<Button @click="toggleTheme()" rounded size="large" variant="outlined" severity="contrast">
 				<template #icon>
-					<span class="material-icons">light_mode</span>
+					<span class="material-icons">{{themeIsDark ? 'dark_mode' : 'light_mode' }}</span>
 				</template>
 			</Button>
 			<Select v-model="currentLang" :options="getAllLangs()">
@@ -69,6 +69,7 @@ export default defineComponent({
 			authVisible: false,
 			clearAuthVisible: false,
 			token: "",
+			themeIsDark: false,
 			currentLang: CURRENT_LANG,
 			langStr: {
 				en_us: {
@@ -95,12 +96,10 @@ export default defineComponent({
 		str(key: string): string {
 			return STR(key);
 		},
-		themeIsDark(): boolean {
-			return document.documentElement.classList.contains('dark');
-		},
 		toggleTheme(forceThemeLight?: boolean): void {
-			const setToLight = forceThemeLight === undefined ? this.themeIsDark() : forceThemeLight;
-			setToLight ? document.documentElement.classList.remove('dark') : document.documentElement.classList.add('dark')
+			const setToLight = forceThemeLight === undefined ? this.themeIsDark : forceThemeLight;
+			setToLight ? document.documentElement.classList.remove('dark') : document.documentElement.classList.add('dark');
+			this.themeIsDark = !setToLight;
 		},
 		isAuthenticated(): boolean {
 			return IS_AUTHENTICATED.value;
