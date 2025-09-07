@@ -1,23 +1,23 @@
 <template>
 	<div class="grid">
-		<p-panel v-for="panelInfo, i in panels" :header="fillKeys(panelInfo.header)" class="box" :style="`grid-row: ${i+1}; grid-column: 1 / ${i < 2 ? 4 : 6};`">
-			<p-tree :key="i" :value="panelInfo.tree" :expanded-keys="Object.fromEntries(panelInfo.expanded.map(k => [k, true]))">
+		<Panel v-for="panelInfo, i in panels" :header="fillKeys(panelInfo.header)" class="box" :style="`grid-row: ${i+1}; grid-column: 1 / ${i < 2 ? 4 : 6};`">
+			<Tree :key="i" :value="panelInfo.tree" :expanded-keys="Object.fromEntries(panelInfo.expanded.map(k => [k, true]))">
 				<template #default="{ node }">
 					<template v-if="node.url"><b v-if="node.preBold">{{ fillKeys(node.preBold) }}: </b>{{ fillKeys(node.preUrl) }}<a target="_blank" :href="fillKeys(node.url)">{{ fillKeys(node.label) }}</a>{{ fillKeys(node.postUrl) }}</template>
 					<template v-else><b v-if="node.preBold">{{ fillKeys(node.preBold) }}: </b>{{ fillKeys(node.preUrl) }}{{ fillKeys(node.label) }}{{ fillKeys(node.postUrl) }}</template>
 				</template>
-			</p-tree>
+			</Tree>
 			<template v-if="i === 1">*Group project</template>
-		</p-panel>
-		<p-panel :header="str('strAboutMe')" class="box rightBox"><table><tbody>
+		</Panel>
+		<Panel :header="str('strAboutMe')" class="box rightBox"><table><tbody>
 			<tr><td><img :src="getImage('smileyface799')" style="width: 100%;"></img></td></tr>
 			<template v-for="entry of rightPanel">
 				<template v-if="shouldBeShown(entry.confidential)">
-					<p-divider/>
+					<Divider/>
 					<tr><td><b>{{ fillKeys(entry.key) }}: </b>{{ fillKeys(entry.value) }}</td></tr>
 				</template>
 			</template>
-		</tbody></table></p-panel>
+		</tbody></table></Panel>
 	</div>
 </template>
 
@@ -25,7 +25,7 @@
 import { defineComponent } from 'vue'
 import { CURRENT_LANG, STR, type ValidLang } from '../scripts/lang';
 import { GET_IMAGE } from '../scripts/img';
-import { CONFIDENTIAL_LOADED } from '../scripts/token';
+import { IS_AUTHENTICATED } from '../scripts/token';
 
 type TreeNode = {
 	key: string,
@@ -397,7 +397,7 @@ export default defineComponent({
 			return expanded;
 		},
 		shouldBeShown(confidential: boolean | undefined): boolean {
-			return confidential ? CONFIDENTIAL_LOADED.value : true;
+			return confidential ? IS_AUTHENTICATED.value : true;
 		}
 	}
 })

@@ -1,10 +1,11 @@
 import { ref } from "vue";
-import { CONFIDENTIAL_LOADED } from "./token";
+import { IS_AUTHENTICATED } from "./token";
+
+const commonLang = {
+	personalDiscord: "@smileyface799"
+} as {[key: string]: string};
 
 const lang = {
-	common: {
-		personalDiscord: "@smileyface799"
-	} as {[key: string]: string},
 	en_us: {
 		// String literals
 		strRelSkills: "Related skills",
@@ -163,7 +164,7 @@ const lang = {
 		// personal info
 		personalOccupation: "Student",
 		personalNationality: "Norsk",
-		personalLanguage: "Norsk & Engelsk",
+		personalLanguages: "Norsk & Engelsk",
 		
 		// thesises
 		thesisBachelor: "Bacheloroppgave",
@@ -204,39 +205,58 @@ const lang = {
 		INGT2300: "INGT2300 Ingeniørfaglig systemtenkning"
 	} as {[key: string]: string}
 };
-const confidential = {} as typeof lang;
+const confidentialLang = {} as typeof lang;
+const confidentialCommonLang = {} as typeof commonLang;
 export type ValidLang = keyof typeof lang;
 
 export var CURRENT_LANG = ref("en_us" as ValidLang);
+export function ALL_LANGS(): ValidLang[] {
+	return Object.keys(lang) as ValidLang[];
+}
 
 export async function FETCH_CONFIDENTIAL_LANG(token: string): Promise<void> {
 	const r = await fetch('http://localhost:5000/confidential', {headers: {"X-API-key": token}});
 	const json = r.ok ? await r.json() : null;
 	if (json && json.result) {
-		for (const k in json.result) {
-			if (k in lang) {
-				confidential[k as ValidLang] = json.result[k]
+		for (const l in json.result) {
+			if (l in lang) {
+				if (!(l in confidentialLang)) {
+					confidentialLang[l as ValidLang] = {};
+				}
+				for (const k in json.result.common) {
+					confidentialLang[l as ValidLang][k] = json.result[l][k];
+				}
+				confidentialLang[l as ValidLang] = json.result[l]
+			} else if (l === "common") {
+				for (const k in json.result.common) {
+					confidentialCommonLang[k] = json.result.common[k];
+				}
 			}
 		}
 	}
 }
 
 export function CLEAR_CONFIDENTIAL_LANG(): void {
-	for (const key in confidential) {
-		delete confidential[key as ValidLang];
+	for (const key in confidentialCommonLang) {
+		delete confidentialCommonLang[key];
+	}
+	for (const l in confidentialLang) {
+		for (const key in confidentialLang[l as ValidLang]) {
+			delete confidentialLang[l as ValidLang][key];
+		}
 	}
 }
 
 export function STR(key: string): string {
-	var keys = CONFIDENTIAL_LOADED.value ? confidential[CURRENT_LANG.value] : undefined; //lang[CURRENT_LANG.value] as {[key: string]: string} | undefined;
+	var keys = IS_AUTHENTICATED.value ? confidentialLang[CURRENT_LANG.value] : undefined; //lang[CURRENT_LANG.value] as {[key: string]: string} | undefined;
 	if (keys === undefined || keys[key] === undefined) {
-		keys = CONFIDENTIAL_LOADED.value ? confidential.common : undefined;
+		keys = IS_AUTHENTICATED.value ? confidentialCommonLang : undefined;
 	}
 	if (keys === undefined || keys[key] === undefined) {
-		keys = lang[CURRENT_LANG.value]
+		keys = lang[CURRENT_LANG.value];
 	}
 	if (keys === undefined || keys[key] === undefined) {
-		keys = lang.common
+		keys = commonLang;
 	}
 	return keys !== undefined && keys[key] !== undefined ? keys[key] : `{${key} (MISSING TRANSLATION)}`;
 }

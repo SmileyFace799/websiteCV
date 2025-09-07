@@ -1,45 +1,93 @@
 <template>
-	<div>
-		<p-toast/>
-		<header>
-			<p-button @click="toggleTheme">oi</p-button>
-			<p-button label="Show sensitive information (authenticate)" @click="visible = true" />
+	<Toast/>
+	<header class="top-bar" style="width: 100%;">
+		<nav class="nav-buttons">
+			<Button v-if="!isAuthenticated()" label="Authenticate" @click="authVisible = true" variant="outlined" severity="info" ></Button>
+			<Button v-else label="Clear authentication" @click="clearAuthVisible = true" variant="outlined" severity="danger"></Button>
+			<span>Authentication status: {{ isAuthenticated() ? 'Authenticated!' : 'Not authenticated' }}</span>
 
-			<p-dialog v-model:visible="visible" modal header="Authenticate yourself">
-				<div class="auth-dialog">
-					<span>To show sensitive information on this site, please enter an authentication token</span>
-					<div style="display: grid; grid-template-columns: auto 1fr; gap: 0.25em">
-						<label for="token">Token:</label>
-						<p-input-text id="token" v-model="token" style="width: auto;" autocomplete="off" />
-					</div>
-					<div style="display: flex; gap: 0.5em;">
-						<p-button type="button" label="Submit" @click="onAuthSubmit"></p-button>
-						<p-button type="button" label="Cancel" severity="secondary" @click="visible = false"></p-button>
-					</div>
+			<span></span> <!-- Separator element -->
+
+			<Button @click="toggleTheme()" rounded size="large" variant="outlined" severity="contrast">
+				<template #icon>
+					<span class="material-icons">light_mode</span>
+				</template>
+			</Button>
+			<Select v-model="currentLang" :options="getAllLangs()">
+				<template #value="{ value }">
+					<template v-if="value">
+						<span :class="['fi', 'fi-' + (value as string).slice(-2)]"></span>
+						<span style="margin-left: 0.25em;">{{ langStr[currentLang][value as ValidLang] }}</span>
+					</template>
+					<span v-else>(No language selected)</span>
+				</template>
+				<template #option="{ option }">
+					<template v-if="option">
+						<span :class="['fi', 'fi-' + (option as string).slice(-2)]"></span>
+						<span style="margin-left: 0.25em;">{{ langStr[currentLang][option as ValidLang] }}</span>
+					</template>
+				</template>
+			</Select>
+		</nav>
+
+		<Dialog v-model:visible="authVisible" modal header="Authenticate yourself">
+			<div class="auth-dialog">
+				<span>To show sensitive information on this site, please enter an authentication token</span>
+				<div style="display: grid; grid-template-columns: auto 1fr; gap: 0.25em">
+					<label for="token">Token:</label>
+					<InputText id="token" v-model="token" style="width: auto;" autocomplete="off" />
 				</div>
-			</p-dialog>
-		</header>
-		<main class="flex-center">
-			<router-view />
-		</main>
-	</div>
+				<div style="display: flex; gap: 0.5em;">
+					<Button type="button" label="Submit" @click="onAuthSubmit"></Button>
+					<Button type="button" label="Cancel" severity="secondary" @click="authVisible = false"></Button>
+				</div>
+			</div>
+		</Dialog>
+		<Dialog v-model:visible="clearAuthVisible" modal header="Clear authentication">
+			<div class="auth-dialog">
+				<span>Are you sure you want to clear authentication?</span>
+				<div style="display: flex; gap: 0.5em;">
+					<Button type="button" label="Clear" @click="onAuthClear" severity="danger"></Button>
+					<Button type="button" label="Cancel" severity="secondary" @click="clearAuthVisible = false"></Button>
+				</div>
+			</div>
+		</Dialog>
+	</header>
+	<main class="flex-center">
+		<router-view />
+	</main>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { CURRENT_LANG, STR, type ValidLang } from './scripts/lang';
-import { SAVE_TOKEN, USE_TOKEN } from './scripts/token';
+import { ALL_LANGS, CURRENT_LANG, STR, type ValidLang } from './scripts/lang';
+import { CLEAR_TOKEN, IS_AUTHENTICATED, SAVE_TOKEN, USE_TOKEN } from './scripts/token';
 
 export default defineComponent({
 	data() {
 		return {
-			visible: false,
-			token: ""
+			authVisible: false,
+			clearAuthVisible: false,
+			token: "",
+			currentLang: CURRENT_LANG,
+			langStr: {
+				en_us: {
+					en_us: "English (US)",
+					nb_no: "Norwegian (Bokmål)"
+				},
+				nb_no: {
+					en_us: "Engelsk (USA)",
+					nb_no: "Norsk (Bokmål)"
+				}
+			} as {[key in ValidLang]: {[key in ValidLang]: string}}
 		}
 	},
 	methods: {
 		getLang(): ValidLang {
 			return CURRENT_LANG.value;
+		},
+		getAllLangs(): ValidLang[] {
+			return ALL_LANGS();
 		},
 		setLang(lang: ValidLang): void {
 			CURRENT_LANG.value = lang
@@ -47,8 +95,15 @@ export default defineComponent({
 		str(key: string): string {
 			return STR(key);
 		},
-		toggleTheme(): void {
-			document.documentElement.classList.contains('dark') ? document.documentElement.classList.remove('dark') : document.documentElement.classList.add('dark')
+		themeIsDark(): boolean {
+			return document.documentElement.classList.contains('dark');
+		},
+		toggleTheme(forceThemeLight?: boolean): void {
+			const setToLight = forceThemeLight === undefined ? this.themeIsDark() : forceThemeLight;
+			setToLight ? document.documentElement.classList.remove('dark') : document.documentElement.classList.add('dark')
+		},
+		isAuthenticated(): boolean {
+			return IS_AUTHENTICATED.value;
 		},
 		onAuthSubmit(): void {
 			SAVE_TOKEN(this.token).then(r => r.code === 200
@@ -58,15 +113,20 @@ export default defineComponent({
 				) : this.showToast('error', 'Authentication failed', `${r.code} ${r.message}`)
 			);
 			this.token = "";
-			this.visible = false;
+			this.authVisible = false;
 		},
-		showToast(severity: "success" | "infi" | "warn" | "error" | "secondary" | "contrast", summary: string, detail: string, life: number = 5000) {
+		onAuthClear(): void {
+			CLEAR_TOKEN();
+			this.showToast("info", "Authentication cleared", "You are no longer authenticated");
+			this.clearAuthVisible = false;
+		},
+		showToast(severity: "success" | "info" | "warn" | "error" | "secondary" | "contrast", summary: string, detail: string, life: number = 5000) {
             this.$toast.add({severity, summary, detail, life});
         }
 	},
 	mounted() {
 		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-			document.documentElement.classList.add('dark')
+			this.toggleTheme(false);
 		}
 		USE_TOKEN();
 	}
@@ -78,6 +138,15 @@ html, body, p, a, div, span, button {
 	font-size: 24px;
 }
 
+.nav-buttons {
+	align-items: center;
+	display: grid;
+	grid-template-columns: auto auto 1fr auto auto;
+	flex-wrap: wrap;
+	gap: 1em;
+	padding: 1em;
+}
+
 .auth-dialog {
 	display: flex;
 	flex-direction: column;
@@ -85,13 +154,10 @@ html, body, p, a, div, span, button {
 }
 
 .flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: left;
-}
-
-:root {
-  font-size: 18px;
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	max-width: max(1280px, 75vw);
+  	text-align: left;
 }
 </style>

@@ -4,11 +4,22 @@ import { CLEAR_CONFIDENTIAL_LANG, FETCH_CONFIDENTIAL_LANG } from "./lang";
 
 const tokenKey = "token";
 
-export const CONFIDENTIAL_LOADED = ref(false);
+export const IS_AUTHENTICATED = ref(false);
+
+function clearConfidential() {
+    CLEAR_CONFIDENTIAL_LANG();
+    CLEAR_CONFIDENTIAL_IMGS();
+    IS_AUTHENTICATED.value = false;
+}
 
 export async function SAVE_TOKEN(token: string): Promise<{valid: boolean, code: number, message: string}> {
     localStorage.setItem(tokenKey, token);
     return await USE_TOKEN(token);
+}
+
+export function CLEAR_TOKEN(): void {
+    localStorage.removeItem(tokenKey);
+    clearConfidential();
 }
 
 export function GET_TOKEN(): string | null {
@@ -27,11 +38,9 @@ export async function USE_TOKEN(token?: string): Promise<{valid: boolean, code: 
             FETCH_CONFIDENTIAL_LANG(t),
             LOAD_CONFIDENTIAL_IMGS(t)
         ]);
-        CONFIDENTIAL_LOADED.value = true;
+        IS_AUTHENTICATED.value = true;
     } else {
-        CLEAR_CONFIDENTIAL_LANG();
-        CLEAR_CONFIDENTIAL_IMGS();
-        CONFIDENTIAL_LOADED.value = false;
+        clearConfidential();
     }
     return {valid, code: r.status, message: r.statusText};
 }

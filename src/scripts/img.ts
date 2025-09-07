@@ -1,6 +1,6 @@
 import { ref, type Ref } from "vue";
 import smiley from '../assets/smiley_pfp.png';
-import { CONFIDENTIAL_LOADED } from "./token";
+import { IS_AUTHENTICATED } from "./token";
 
 const imgs = {
     "smileyface799": smiley
@@ -30,7 +30,7 @@ export function CLEAR_CONFIDENTIAL_IMGS(): void {
 
 export function GET_IMAGE(imgName: string): string {
     var image = undefined as string | undefined;
-    if (CONFIDENTIAL_LOADED && imgName in confidentialImgs) {
+    if (IS_AUTHENTICATED && imgName in confidentialImgs) {
         image = confidentialImgs[imgName];
     }
     if (image === undefined && imgName in imgs) {
