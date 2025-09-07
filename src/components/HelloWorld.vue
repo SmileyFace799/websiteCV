@@ -10,7 +10,7 @@
 			<template v-if="i === 1">*Group project</template>
 		</p-panel>
 		<p-panel :header="str('strAboutMe')" class="box rightBox"><table><tbody>
-			<tr><td><img src="../assets/smiley_pfp.png" style="width: 100%;"></img></td></tr>
+			<tr><td><img :src="getImage('smileyface799')" style="width: 100%;"></img></td></tr>
 			<template v-for="entry of rightPanel">
 				<template v-if="shouldBeShown(entry.confidential)">
 					<p-divider/>
@@ -23,7 +23,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { CONFIDENTIAL_LOADED, CURRENT_LANG, STR, type ValidLang } from '../scripts/lang';
+import { CURRENT_LANG, STR, type ValidLang } from '../scripts/lang';
+import { GET_IMAGE } from '../scripts/img';
+import { CONFIDENTIAL_LOADED } from '../scripts/token';
 
 type TreeNode = {
 	key: string,
@@ -378,6 +380,9 @@ export default defineComponent({
 		},
 		fillKeys(s: string | undefined): string | undefined {
 			return s?.replace(/{(.*?)}/g, (_, key) => this.str(key));
+		},
+		getImage(imgName: string): string {
+			return GET_IMAGE(imgName);
 		},
 		findExpanded(nodes: TreeNode[]): string[] {
 			const expanded = [] as string[];

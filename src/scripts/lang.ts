@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { CONFIDENTIAL_LOADED } from "./token";
 
 const lang = {
 	common: {
@@ -207,25 +208,23 @@ const confidential = {} as typeof lang;
 export type ValidLang = keyof typeof lang;
 
 export var CURRENT_LANG = ref("en_us" as ValidLang);
-export const CONFIDENTIAL_LOADED = ref(false);
 
-export function FETCH_CONFIDENTIAL_LANG(token: string) {
-	fetch('http://localhost:5000/confidential', {
-		headers: {
-			"X-API-key": token
-		}
-	})
-	.then(r => r.ok ? r.json() : null)
-	.then(json => {
-		if (json && json.result) {
-			for (const k in json.result) {
-				if (k in lang) {
-					confidential[k as ValidLang] = json.result[k]
-				}
+export async function FETCH_CONFIDENTIAL_LANG(token: string): Promise<void> {
+	const r = await fetch('http://localhost:5000/confidential', {headers: {"X-API-key": token}});
+	const json = r.ok ? await r.json() : null;
+	if (json && json.result) {
+		for (const k in json.result) {
+			if (k in lang) {
+				confidential[k as ValidLang] = json.result[k]
 			}
 		}
-		CONFIDENTIAL_LOADED.value = true;
-	});
+	}
+}
+
+export function CLEAR_CONFIDENTIAL_LANG(): void {
+	for (const key in confidential) {
+		delete confidential[key as ValidLang];
+	}
 }
 
 export function STR(key: string): string {

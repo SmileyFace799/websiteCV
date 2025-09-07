@@ -1,6 +1,10 @@
-import { FETCH_CONFIDENTIAL_LANG } from "./lang";
+import { ref } from "vue";
+import { CLEAR_CONFIDENTIAL_IMGS, LOAD_CONFIDENTIAL_IMGS } from "./img";
+import { CLEAR_CONFIDENTIAL_LANG, FETCH_CONFIDENTIAL_LANG } from "./lang";
 
 const tokenKey = "token";
+
+export const CONFIDENTIAL_LOADED = ref(false);
 
 export async function SAVE_TOKEN(token: string): Promise<{valid: boolean, code: number, message: string}> {
     localStorage.setItem(tokenKey, token);
@@ -19,7 +23,15 @@ export async function USE_TOKEN(token?: string): Promise<{valid: boolean, code: 
     const json = r.ok ? await r.json() : null;
     const valid = json?.result?.valid
     if (valid) {
-        FETCH_CONFIDENTIAL_LANG(t);
+        await Promise.all([
+            FETCH_CONFIDENTIAL_LANG(t),
+            LOAD_CONFIDENTIAL_IMGS(t)
+        ]);
+        CONFIDENTIAL_LOADED.value = true;
+    } else {
+        CLEAR_CONFIDENTIAL_LANG();
+        CLEAR_CONFIDENTIAL_IMGS();
+        CONFIDENTIAL_LOADED.value = false;
     }
     return {valid, code: r.status, message: r.statusText};
 }
