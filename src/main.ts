@@ -22,7 +22,7 @@ createApp(App)
         preset: Aura,
         options: {
             prefix: 'p',
-            darkModeSelector: '.dark', // Use 'class' for manual toggling via class
+            darkModeSelector: '.dark',
             cssLayer: false
         }
     }

@@ -1,4 +1,3 @@
-import { ref, type Ref } from "vue";
 import smiley from '../assets/smiley_pfp.png';
 import { IS_AUTHENTICATED } from "./token";
 
