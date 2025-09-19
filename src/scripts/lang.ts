@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { IS_AUTHENTICATED } from "./token";
+import { GET_ENDPOINT, IS_AUTHENTICATED } from "./token";
 
 const commonLang = {
 	personalDiscord: "@smileyface799"
@@ -215,7 +215,7 @@ export function ALL_LANGS(): ValidLang[] {
 }
 
 export async function FETCH_CONFIDENTIAL_LANG(token: string): Promise<void> {
-	const r = await fetch('http://localhost:5000/confidential', {headers: {"X-API-key": token}});
+	const r = await fetch(GET_ENDPOINT("confidential"), {headers: {"X-API-key": token}});
 	const json = r.ok ? await r.json() : null;
 	if (json && json.result) {
 		for (const l in json.result) {

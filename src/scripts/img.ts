@@ -1,5 +1,5 @@
 import smiley from '../assets/smiley_pfp.png';
-import { IS_AUTHENTICATED } from "./token";
+import { GET_ENDPOINT, IS_AUTHENTICATED } from "./token";
 
 const imgs = {
     "smileyface799": smiley
@@ -7,7 +7,7 @@ const imgs = {
 const confidentialImgs = {} as {[key: string]: string};
 
 async function fetchImage(imgName: string, token: string): Promise<void> {
-    const r = await fetch(`http://localhost:5000/confidential/image/png?name=${encodeURIComponent(imgName)}`, {headers: {"X-API-key": token}});
+    const r = await fetch(GET_ENDPOINT(`confidential/image/png?name=${encodeURIComponent(imgName)}`), {headers: {"X-API-key": token}});
     const blob = r.ok ? await r.blob() : undefined;
     if (blob) {
         if (!(imgName in imgs)) {

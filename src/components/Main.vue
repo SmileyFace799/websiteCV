@@ -1,7 +1,7 @@
 <template>
 	<div class="grid">
 		<Panel v-for="panelInfo, i in panels" :header="fillKeys(panelInfo.header)" class="box" :style="`grid-row: ${i+1}; grid-column: 1 / ${i < 2 ? 4 : 6};`">
-			<Tree :key="i" :value="panelInfo.tree" :expanded-keys="Object.fromEntries(panelInfo.expanded.map(k => [k, true]))">
+			<Tree :key="i" :value="panelInfo.tree" :expanded-keys="Object.fromEntries(panelInfo.expanded.map((k: any) => [k, true]))">
 				<template #default="{ node }">
 					<template v-if="node.url"><b v-if="node.preBold">{{ fillKeys(node.preBold) }}: </b>{{ fillKeys(node.preUrl) }}<a target="_blank" :href="fillKeys(node.url)">{{ fillKeys(node.label) }}</a>{{ fillKeys(node.postUrl) }}</template>
 					<template v-else><b v-if="node.preBold">{{ fillKeys(node.preBold) }}: </b>{{ fillKeys(node.preUrl) }}{{ fillKeys(node.label) }}{{ fillKeys(node.postUrl) }}</template>
