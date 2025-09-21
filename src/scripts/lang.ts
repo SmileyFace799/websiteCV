@@ -79,7 +79,7 @@ const lang = {
 		studyProgramHighSchool: "High School",
 		studyProgramBachelor: "Computer Science [Bachelor], Application Development | NTNU Ålesund",
 		studyProgramBachelorLink: "https://www.ntnu.edu/studies/bidata",
-		studyProgramMaster: "Computer Science [2-year Master], Efficient Data Systemes | NTNU Trondheim",
+		studyProgramMaster: "Computer Science [2-year Master], Efficient Data Systems | NTNU Trondheim",
 		studyProgramMasterLink: "https://www.ntnu.edu/studies/midt",
 		
 		// subjects
