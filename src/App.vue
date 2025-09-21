@@ -84,11 +84,18 @@ export default defineComponent({
 			langStr: {
 				en_us: {
 					en_us: "English (US)",
-					nb_no: "Norwegian (Bokmål)"
+					nb_no: "Norwegian (Bokmål)",
+					fr_fr: "French (France)"
 				},
 				nb_no: {
 					en_us: "Engelsk (USA)",
-					nb_no: "Norsk (Bokmål)"
+					nb_no: "Norsk (Bokmål)",
+					fr_fr: "Fransk (Frankrike)"
+				},
+				fr_fr: {
+					en_us: "Anglais (US)",
+    				nb_no: "Norvégien (Bokmål)",
+					fr_fr: "Français (France)"
 				}
 			} as {[key in ValidLang]: {[key in ValidLang]: string}},
 			windowSize

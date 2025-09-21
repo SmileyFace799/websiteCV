@@ -203,6 +203,106 @@ const lang = {
 		IMAT2150: "IMAT2150 Matematiske metoder 3 for dataigeniør",
 		IDATA2900: "IDATA2900 Bacheloroppgave Bachelor i data",
 		INGT2300: "INGT2300 Ingeniørfaglig systemtenkning"
+	} as {[key: string]: string},
+	fr_fr: {
+		// String literals
+		strRelSkills: "Compétences connexes",
+		strRelProjects: "Projets connexes",
+		strRelEducation: "Éducation connexe",
+
+		strMySkills: "Mes compétences",
+		strProgLangs: "Languages de programmation",
+		strFrameworks: "Frameworks",
+		strAgileDev: "Développement agile",
+		strApiAccessing: "Accès aux APIs",
+		strDataStorageSerialize: "Stockage & sérialisation de données",
+		strNetworking: "Réseautage",
+		strDatabases: "Bases de données",
+		strFullStackDev: "Développement full-stack",
+
+		strMyProjects: "Mes projets",
+		strNote: "Note",
+		strNoGitHub: "GitHub n'était pas utilisé avant Septembre 2021",
+		strDependency: "Dépendences",
+		strParentProject: "Projet parent",
+
+		strMyEducation: "Mon éducation",
+		strSemester: "semestre",
+
+		strAboutMe: "À propos",
+		strName: "Nom",
+		strBorn: "Né·e le",
+		strNationality: "Nationalité",
+		strLanguages: "Langues",
+		strOccupation: "Occupation",
+		strAddress: "Adresse",
+		strPhone: "Téléphone",
+		strEmail: "E-mail",
+		strPronouns: "Pronoms",
+
+		// time stuff
+		monthJan: "Janvier",
+		monthFeb: "Février (the best month lol dont @ me)",
+		monthMar: "Mars",
+		monthApr: "Avril",
+		monthMay: "Mai",
+		monthJun: "Juin",
+		monthJul: "Juillet",
+		monthAug: "Âout",
+		monthSep: "Septembre",
+		monthOct: "Octobre",
+		monthNov: "Novembre",
+		monthDec: "Decembre",
+		present: "Présent",
+		
+		// number suffixes
+		numDefaultSuffix: "ème",
+		num1Suffix: "er/ère",
+		num2Suffix: "ème",
+		num3Suffix: "ème",
+		
+		// personal info
+		personalOccupation: "Étudiant",
+		personalNationality: "Norvégienne",
+		personalLanguages: "Norvégien & Anglais",
+		
+		// thesises
+		thesisBachelor: "Thèses de bachelor",
+		thesisMaster: "Thèse de Master",
+		
+		// degrees
+		degreeBachelor: "Bachelor (équivalent bac+3/4)",
+		degreeMaster: "Master",
+		
+		// study programs
+		studyProgramHighSchool: "Lycée",
+		studyProgramBachelor: "Computer Science [Bachelor], Application Development | NTNU Ålesund",
+		studyProgramBachelorLink: "https://www.ntnu.edu/studies/bidata",
+		studyProgramMaster: "Computer Science [2-year Master], Efficient Data Systems | NTNU Trondheim",
+		studyProgramMasterLink: "https://www.ntnu.edu/studies/midt",
+		
+		// subjects
+		HMS0006: "HMS0006 Health, Safety and Environment (HSE) course for 1st year students - Ålesund",
+		IDATA1001: "IDATA1001 Programming 1",
+		IMAA1001: "IMAA1001 Mathematical methods 1",
+		INGA1001: "INGA1001 Introduction to the engineering profession",
+		IDATA1002: "IDATA1002 Software Engineering",
+		IDATA2001: "IDATA2001 Programming 2",
+		IMAA2021: "IMAA2021 Mathematical methods 2 for Computer engineering",
+		IDATA2302: "IDATA2302 Algorithms and Data Structures",
+		IDATA2303: "IDATA2303 Data Modelling and Database Applications",
+		IDATA2304: "IDATA2304 Computer communication and network programming",
+		ISTA1003: "ISTA1003 Statistics",
+		IDATA2301: "IDATA2301 Web Technologies",
+		IDATA2305: "IDATA2305 Operating Systems with System Programming",
+		IDATA2306: "IDATA2306 Application Development",
+		IFYA1002: "IFYA1002 Physics",
+		IDATT2505: "IDATT2505 Extended Reality (XR)",
+		IDATT2506: "IDATT2506 Application Development for Mobile Units",
+		INFT2503: "INFT2503 C++ for programmers",
+		IMAT2150: "IMAT2150 Mathematical methods 3 for computer engineers",
+		IDATA2900: "IDATA2900 Bachelor Thesis Bachelor of Engineering in Computer Science",
+		INGT2300: "INGT2300 Engineering Systems Thinking"
 	} as {[key: string]: string}
 };
 const confidentialLang = {} as typeof lang;
