@@ -3,7 +3,7 @@ import { CLEAR_CONFIDENTIAL_IMGS, LOAD_CONFIDENTIAL_IMGS } from "./img";
 import { CLEAR_CONFIDENTIAL_LANG, FETCH_CONFIDENTIAL_LANG } from "./lang";
 
 const tokenKey = "token";
-const baseEndpoint = import.meta.env.PROD ? "http://smiley-face.no:8000" : "http://localhost:5000";
+const baseEndpoint = import.meta.env.PROD ? "https://smiley-face.no:8000" : "http://localhost:5000";
 
 export const IS_AUTHENTICATED = ref(false);
 export function GET_ENDPOINT(relativeEndpoint: string): string {
