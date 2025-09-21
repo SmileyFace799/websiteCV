@@ -1,6 +1,6 @@
 <template>
 	<div class="grid">
-		<Panel v-for="panelInfo, i in panels" :header="fillKeys(panelInfo.header)" class="box" :style="`grid-row: ${i+1}; grid-column: 1 / ${i < 2 ? 4 : 6};`">
+		<Panel v-for="panelInfo, i in panels" :header="fillKeys(panelInfo.header)" class="box" :style="{gridRow: i + (windowSize.lessThan('l') ? 2 : 1), gridColumn: `1 / ${i < 2 && windowSize.atLeast('l') ? 4 : 6}`}">
 			<Tree :key="i" :value="panelInfo.tree" :expanded-keys="Object.fromEntries(panelInfo.expanded.map((k: any) => [k, true]))">
 				<template #default="{ node }">
 					<template v-if="node.url"><b v-if="node.preBold">{{ fillKeys(node.preBold) }}: </b>{{ fillKeys(node.preUrl) }}<a target="_blank" :href="fillKeys(node.url)">{{ fillKeys(node.label) }}</a>{{ fillKeys(node.postUrl) }}</template>
@@ -9,8 +9,9 @@
 			</Tree>
 			<template v-if="i === 1">*Group project</template>
 		</Panel>
-		<Panel :header="str('strAboutMe')" class="box rightBox"><table><tbody>
-			<tr><td><img :src="getImage('smileyface799')" style="width: 100%;"></img></td></tr>
+		<Panel :header="str('strAboutMe')" class="box" :style="{gridRow: windowSize.lessThan('l') ? 1 : '1 / 3', gridColumn: `${windowSize.lessThan('l') ? 1 : 4} / 6`}">
+			<img :src="getImage('smileyface799')" style="width: 100%; max-width: 400px;"></img>
+			<table style="display: flex; width: 100%;"><tbody>
 			<template v-for="entry of rightPanel">
 				<template v-if="shouldBeShown(entry.confidential)">
 					<Divider/>
@@ -26,6 +27,7 @@ import { defineComponent } from 'vue'
 import { CURRENT_LANG, STR, type ValidLang } from '../scripts/lang';
 import { GET_IMAGE } from '../scripts/img';
 import { IS_AUTHENTICATED } from '../scripts/token';
+import windowSize from '../scripts/WindowSize';
 
 type TreeNode = {
 	key: string,
@@ -349,6 +351,7 @@ export default defineComponent({
 			]}
 		] as TreeNode[];
 		return {
+			windowSize: windowSize,
 			panels: [
 				{header: "{strMySkills}", tree: skillTree, expanded: this.findExpanded(skillTree)},
 				{header: "{strMyProjects}", tree: projectTree, expanded: this.findExpanded(projectTree)},
@@ -373,7 +376,7 @@ export default defineComponent({
 			return CURRENT_LANG.value;
 		},
 		setLang(lang: ValidLang): void {
-			CURRENT_LANG.value = lang
+			CURRENT_LANG.value = lang;
 		},
 		str(key: string): string {
 			return STR(key);
@@ -408,6 +411,15 @@ h1, h2, h3, h4, h5 {
 	margin-top: 0;
 }
 
+tbody {
+	overflow-x: auto;
+}
+
+table, tbody, th, td {
+	width: 100%;
+	overflow-wrap: break-word;
+}
+
 :global(.p-panel-title) {
 	font-size: 3rem;
 }
@@ -421,7 +433,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .box {
-	padding: 2em 2em 2em 2em;
+	padding: 2em;
 	border-radius: 1em;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
 }
@@ -437,5 +449,29 @@ h1, h2, h3, h4, h5 {
 
 .box2 {
 	grid-row: 2;
+}
+
+@media (max-width: 961px) {
+	.box {
+		padding: 1em;
+	}
+}
+
+@media (max-width: 641px) {
+	.grid {
+		padding: 2em 1em;
+	}
+	.box {
+		padding: 0.5em;
+	}
+}
+
+@media (max-width: 400px) {
+	.grid {
+		padding: 2em 0;
+	}
+	.box {
+		padding: 0;
+	}
 }
 </style>

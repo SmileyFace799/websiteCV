@@ -1,34 +1,39 @@
 <template>
-	<Toast/>
+	<Toast />
 	<header class="top-bar" style="width: 100%;">
-		<nav class="nav-buttons">
-			<Button v-if="!isAuthenticated()" label="Authenticate" @click="authVisible = true" variant="outlined" severity="info" ></Button>
-			<Button v-else label="Clear authentication" @click="clearAuthVisible = true" variant="outlined" severity="danger"></Button>
-			<span>Authentication status: {{ isAuthenticated() ? 'Authenticated!' : 'Not authenticated' }}</span>
+		<Navbar>
+			<template #nav-content>
+				<Button
+					:label="'Sensitive info: ' + (isAuthenticated ? 'Shown' : 'Hidden')"
+					@click="isAuthenticated ? clearAuthVisible = true : authVisible = true"
+					variant="outlined"
+					:severity="isAuthenticated ? 'success' : 'info'"
+				></Button>
 
-			<span></span> <!-- Separator element -->
+				<span></span> <!-- Separator element -->
 
-			<Button @click="toggleTheme()" rounded size="large" variant="outlined" severity="contrast">
-				<template #icon>
-					<span class="material-icons">{{themeIsDark ? 'dark_mode' : 'light_mode' }}</span>
-				</template>
-			</Button>
-			<Select v-model="currentLang" :options="getAllLangs()">
-				<template #value="{ value }">
-					<template v-if="value">
-						<span :class="['fi', 'fi-' + (value as string).slice(-2)]"></span>
-						<span style="margin-left: 0.25em;">{{ langStr[currentLang][value as ValidLang] }}</span>
+				<Button @click="toggleTheme()" rounded size="large" variant="outlined" severity="contrast">
+					<template #icon>
+						<span class="material-icons">{{themeIsDark ? 'dark_mode' : 'light_mode' }}</span>
 					</template>
-					<span v-else>(No language selected)</span>
-				</template>
-				<template #option="{ option }">
-					<template v-if="option">
-						<span :class="['fi', 'fi-' + (option as string).slice(-2)]"></span>
-						<span style="margin-left: 0.25em;">{{ langStr[currentLang][option as ValidLang] }}</span>
+				</Button>
+				<Select v-model="currentLang" :options="allLangs">
+					<template #value="{ value }">
+						<template v-if="value">
+							<span :class="['fi', 'fi-' + (value as string).slice(-2)]"></span>
+							<span style="margin-left: 0.25em;">{{ langStr[currentLang][value as ValidLang] }}</span>
+						</template>
+						<span v-else>(No language selected)</span>
 					</template>
-				</template>
-			</Select>
-		</nav>
+					<template #option="{ option }">
+						<template v-if="option">
+							<span :class="['fi', 'fi-' + (option as string).slice(-2)]"></span>
+							<span style="margin-left: 0.25em;">{{ langStr[currentLang][option as ValidLang] }}</span>
+						</template>
+					</template>
+				</Select>
+			</template>
+		</Navbar>
 
 		<Dialog v-model:visible="authVisible" modal header="Authenticate yourself">
 			<div class="auth-dialog">
@@ -45,7 +50,7 @@
 		</Dialog>
 		<Dialog v-model:visible="clearAuthVisible" modal header="Clear authentication">
 			<div class="auth-dialog">
-				<span>Are you sure you want to clear authentication?</span>
+				<span>Do you want to clear authentication?</span>
 				<div style="display: flex; gap: 0.5em;">
 					<Button type="button" label="Clear" @click="onAuthClear" severity="danger"></Button>
 					<Button type="button" label="Cancel" severity="secondary" @click="clearAuthVisible = false"></Button>
@@ -62,8 +67,13 @@
 import { defineComponent } from 'vue';
 import { ALL_LANGS, CURRENT_LANG, STR, type ValidLang } from './scripts/lang';
 import { CLEAR_TOKEN, IS_AUTHENTICATED, SAVE_TOKEN, USE_TOKEN } from './scripts/token';
+import windowSize from './scripts/WindowSize';
+import Navbar from './components/NavBar.vue';
 
 export default defineComponent({
+	components: {
+		Navbar
+	},
 	data() {
 		return {
 			authVisible: false,
@@ -80,16 +90,11 @@ export default defineComponent({
 					en_us: "Engelsk (USA)",
 					nb_no: "Norsk (Bokmål)"
 				}
-			} as {[key in ValidLang]: {[key in ValidLang]: string}}
+			} as {[key in ValidLang]: {[key in ValidLang]: string}},
+			windowSize
 		}
 	},
 	methods: {
-		getLang(): ValidLang {
-			return CURRENT_LANG.value;
-		},
-		getAllLangs(): ValidLang[] {
-			return ALL_LANGS();
-		},
 		setLang(lang: ValidLang): void {
 			CURRENT_LANG.value = lang
 		},
@@ -100,9 +105,6 @@ export default defineComponent({
 			const setToLight = forceThemeLight === undefined ? this.themeIsDark : forceThemeLight;
 			setToLight ? document.documentElement.classList.remove('dark') : document.documentElement.classList.add('dark');
 			this.themeIsDark = !setToLight;
-		},
-		isAuthenticated(): boolean {
-			return IS_AUTHENTICATED.value;
 		},
 		onAuthSubmit(): void {
 			SAVE_TOKEN(this.token).then(r => r.code === 200
@@ -123,11 +125,25 @@ export default defineComponent({
             this.$toast.add({severity, summary, detail, life});
         }
 	},
+
+	computed: {
+        isAuthenticated(): boolean {
+			return IS_AUTHENTICATED.value;
+		},
+		allLangs(): ValidLang[] {
+			return ALL_LANGS();
+		},
+    },
+
 	mounted() {
 		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
 			this.toggleTheme(false);
 		}
 		USE_TOKEN();
+		windowSize.startTracking();
+	},
+	unmounted() {
+		windowSize.stopTracking();
 	}
 })
 </script>
@@ -135,15 +151,6 @@ export default defineComponent({
 <style scoped>
 html, body, p, a, div, span, button {
 	font-size: 24px;
-}
-
-.nav-buttons {
-	align-items: center;
-	display: grid;
-	grid-template-columns: auto auto 1fr auto auto;
-	flex-wrap: wrap;
-	gap: 1em;
-	padding: 1em;
 }
 
 .auth-dialog {
