@@ -2,7 +2,7 @@ import smiley from '../assets/smiley_pfp.png';
 import { GET_ENDPOINT, IS_AUTHENTICATED } from "./token";
 
 const imgs = {
-    "smileyface799": smiley
+    smileyface799: smiley
 } as {[key: string]: string};
 const confidentialImgs = {} as {[key: string]: string};
 
