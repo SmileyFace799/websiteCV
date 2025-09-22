@@ -242,7 +242,7 @@ const lang = {
 
 		// time stuff
 		monthJan: "Janvier",
-		monthFeb: "Février (the best month lol dont @ me)",
+		monthFeb: "Février",
 		monthMar: "Mars",
 		monthApr: "Avril",
 		monthMay: "Mai",
