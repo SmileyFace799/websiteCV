@@ -358,7 +358,9 @@ export default defineComponent({
 				{header: "{strMyEducation}", tree: educationTree, expanded: this.findExpanded(educationTree)}
 			] as {header: string, tree: TreeNode[], expanded: string[]}[],
 			rightPanel: [
-				{key: "{strName}", value: "SmileyFace799"},
+				{key: "{strChosenName}", value: "{personalChosenName}", confidential: true},
+				{key: "{strLegalName}", value: "{personalLegalName}", confidential: true},
+				{key: "{strName}", value: "SmileyFace799", confidential: false},
 				{key: "{strBorn}", value: "{personalBirthDate}/{personalBirthMonth}/{personalBirthYear}", confidential: true},
 				{key: "{strNationality}", value: "{personalNationality}"},
 				{key: "{strLanguages}", value: "{personalLanguages}"},
@@ -400,7 +402,7 @@ export default defineComponent({
 			return expanded;
 		},
 		shouldBeShown(confidential: boolean | undefined): boolean {
-			return confidential ? IS_AUTHENTICATED.value : true;
+			return confidential === undefined ? true : confidential === IS_AUTHENTICATED.value;
 		}
 	}
 })

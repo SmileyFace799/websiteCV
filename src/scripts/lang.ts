@@ -32,6 +32,8 @@ const lang = {
 		strSemester: "semester",
 
 		strAboutMe: "About me",
+		strChosenName: "Chosen name",
+		strLegalName: "Legal name",
 		strName: "Name",
 		strBorn: "Born",
 		strNationality: "Nationality",
@@ -131,6 +133,8 @@ const lang = {
 		strSemester: "semester",
 
 		strAboutMe: "Om meg",
+		strChosenName: "Valgt navn",
+		strLegalName: "Juridisk navn",
 		strName: "Navn",
 		strBorn: "Født",
 		strNationality: "Nasjonalitet",
@@ -230,6 +234,8 @@ const lang = {
 		strSemester: "semestre",
 
 		strAboutMe: "À propos",
+		strChosenName: "Nom choisi",
+		strLegalName: "Nom légal",
 		strName: "Nom",
 		strBorn: "Né·e le",
 		strNationality: "Nationalité",
